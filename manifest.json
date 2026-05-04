@@ -1,0 +1,846 @@
+{
+  "schema_version": 1,
+  "repository": "https://github.com/srcfl/hugin-drivers",
+  "commit": "066de99bda3942f237ff87f11e291a5424c0c59c",
+  "generated_at": "2026-05-04T16:50:18Z",
+  "drivers": [
+    {
+      "id": "ctek-chargestorm",
+      "path": "drivers/ctek.lua",
+      "filename": "ctek.lua",
+      "version": "0.2.0",
+      "sha256": "58a39e1c3a1e0e36f4a62531db4d2f4162e1e96cc4a230a48264953eb0e24ddd",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/ctek.lua",
+      "metadata": {
+        "name": "CTEK Chargestorm (API v1)",
+        "manufacturer": "CTEK",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "ev"
+        ],
+        "description": "CTEK Chargestorm Connected 2/3 via Modbus/TCP Automation API v1 (CSOS ≥ 4.9.3). Full telemetry + current-limit control.",
+        "homepage": "https://www.ctek.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "beta",
+        "verification_notes": "Register map per CTEK Automation interface v1.0; charging-limit write verified against CSOS 4.9.x. Derived charging/connected flags approximate the real EVSE state since the state code is MQTT-only.",
+        "tested_models": [
+          "Chargestorm Connected 2",
+          "Chargestorm Connected 3"
+        ]
+      }
+    },
+    {
+      "id": "ctek-chargestorm-v2",
+      "path": "drivers/ctek_v2.lua",
+      "filename": "ctek_v2.lua",
+      "version": "0.2.0",
+      "sha256": "d42a30c367faeb0b86cdab48376593767e75c4b65de17d1e3e8ea6013d109255",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/ctek_v2.lua",
+      "metadata": {
+        "name": "CTEK Chargestorm (API v2)",
+        "manufacturer": "CTEK",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "ev"
+        ],
+        "description": "CTEK Chargestorm Connected 2/3 via Modbus/TCP Automation API v2 (CSOS ≥ 4.9.3). Full telemetry + current-limit control.",
+        "homepage": "https://www.ctek.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "beta",
+        "verification_notes": "Register map per CTEK Automation interface v1.0 (API v2 offsets); charging-limit write verified against CSOS 4.9.x. Derived charging/connected flags approximate the real EVSE state since the state code is MQTT-only.",
+        "tested_models": [
+          "Chargestorm Connected 2",
+          "Chargestorm Connected 3"
+        ]
+      }
+    },
+    {
+      "id": "deye",
+      "path": "drivers/deye.lua",
+      "filename": "deye.lua",
+      "version": "1.0.0",
+      "sha256": "730bcc8b3b1f1385687c526236704684aefe472bfe5239acdd66a802ba528281",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/deye.lua",
+      "metadata": {
+        "name": "Deye hybrid inverter",
+        "manufacturer": "Deye",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Deye SUN-SG series hybrid inverters via Modbus. Auto-detects LV vs HV battery at init.",
+        "homepage": "https://www.deyeinverter.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "SUN-SG03LP1",
+          "SUN-SG04LP3"
+        ]
+      }
+    },
+    {
+      "id": "easee-cloud",
+      "path": "drivers/easee_cloud.lua",
+      "filename": "easee_cloud.lua",
+      "version": "1.0.0",
+      "sha256": "e1d9c6feb7c431bf8bfdb338776f134481c8c8e51569456bca257880c99ac7f4",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/easee_cloud.lua",
+      "metadata": {
+        "name": "Easee Cloud",
+        "manufacturer": "Easee",
+        "protocols": [
+          "http"
+        ],
+        "capabilities": [
+          "ev"
+        ],
+        "description": "Easee Home/Charge via Cloud REST API. No local protocol needed.",
+        "homepage": "https://easee.com",
+        "verification_status": "production",
+        "verified_by": [
+          "frahlg@homelab-rpi:2d",
+          "erikarenhill@fortytwo:1d"
+        ],
+        "verified_at": "2026-04-18",
+        "verification_notes": "Observations API + lifecycle commands exercised against an Easee Home charger. Session state, op_mode labels, charge/pause/resume all verified.",
+        "tested_models": [
+          "Home",
+          "Charge"
+        ]
+      }
+    },
+    {
+      "id": "ferroamp",
+      "path": "drivers/ferroamp.lua",
+      "filename": "ferroamp.lua",
+      "version": "1.0.0",
+      "sha256": "1901290745589f9c10d7a4eaa96bdaabe39f9640fe77e5fdbdb1a70fd5bd8ece",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/ferroamp.lua",
+      "metadata": {
+        "name": "Ferroamp EnergyHub",
+        "manufacturer": "Ferroamp",
+        "protocols": [
+          "mqtt"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Ferroamp EnergyHub with ESO battery + SSO solar strings (3-phase).",
+        "homepage": "https://ferroamp.com",
+        "connection_defaults": {
+          "password": "ferroampExtApi",
+          "port": 1883,
+          "username": "extapi"
+        },
+        "verification_status": "production",
+        "verified_by": [
+          "frahlg@homelab-rpi:14d"
+        ],
+        "verified_at": "2026-04-18",
+        "verification_notes": "In continuous use on 3-phase 16A SE site, MPC + dispatch control loop exercised daily.",
+        "tested_models": [
+          "EnergyHub XL"
+        ]
+      }
+    },
+    {
+      "id": "ferroamp-modbus",
+      "path": "drivers/ferroamp_modbus.lua",
+      "filename": "ferroamp_modbus.lua",
+      "version": "1.0.0",
+      "sha256": "7f3d439f8f939fc1f0e1ae849be052b28a7925fa3f87d92ac5db8aa4c2c548a8",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/ferroamp_modbus.lua",
+      "metadata": {
+        "name": "Ferroamp EnergyHub (Modbus)",
+        "manufacturer": "Ferroamp",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Ferroamp EnergyHub XL via Modbus TCP (alternative transport to drivers/ferroamp.lua).",
+        "homepage": "https://ferroamp.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from sourceful-hugin. Read-only telemetry; control still goes through drivers/ferroamp.lua (MQTT). Not yet verified against live hardware.",
+        "tested_models": [
+          "EnergyHub XL"
+        ]
+      }
+    },
+    {
+      "id": "fronius",
+      "path": "drivers/fronius.lua",
+      "filename": "fronius.lua",
+      "version": "1.0.0",
+      "sha256": "44d53621e5e78c3a572bf1b0171b530434d962de46db65499d746cd2575bc4b1",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/fronius.lua",
+      "metadata": {
+        "name": "Fronius GEN24",
+        "manufacturer": "Fronius",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "pv",
+          "battery"
+        ],
+        "description": "Fronius Symo / Primo GEN24 hybrid inverters via Modbus TCP (SunSpec).",
+        "homepage": "https://www.fronius.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "Symo GEN24",
+          "Primo GEN24"
+        ]
+      }
+    },
+    {
+      "id": "fronius-smart-meter",
+      "path": "drivers/fronius_smart_meter.lua",
+      "filename": "fronius_smart_meter.lua",
+      "version": "1.0.0",
+      "sha256": "cba363cf37a92fd571c1793e1658ea6794d060f5c727b4c39a19c9cf62796477",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/fronius_smart_meter.lua",
+      "metadata": {
+        "name": "Fronius Smart Meter",
+        "manufacturer": "Fronius",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter"
+        ],
+        "description": "Fronius Smart Meter three-phase energy meter via Modbus TCP (SunSpec).",
+        "homepage": "https://www.fronius.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "Smart Meter 50kA-3",
+          "Smart Meter 63A-3",
+          "Smart Meter TS 65A-3"
+        ]
+      }
+    },
+    {
+      "id": "goodwe",
+      "path": "drivers/goodwe.lua",
+      "filename": "goodwe.lua",
+      "version": "1.0.0",
+      "sha256": "d55f9b71239fdbcd693f669c53cf416ee85853f0b27ca0d5e1e3216bf8c8af41",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/goodwe.lua",
+      "metadata": {
+        "name": "GoodWe hybrid inverter",
+        "manufacturer": "GoodWe",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "GoodWe ET-Plus / EH series hybrid inverters via Modbus TCP.",
+        "homepage": "https://en.goodwe.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "ET-Plus",
+          "EH series"
+        ]
+      }
+    },
+    {
+      "id": "growatt",
+      "path": "drivers/growatt.lua",
+      "filename": "growatt.lua",
+      "version": "1.0.0",
+      "sha256": "f0e7387fa61e0ecabbcac916cd4ffefd854835467904f17e028808b935c1e8db",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/growatt.lua",
+      "metadata": {
+        "name": "Growatt hybrid inverter",
+        "manufacturer": "Growatt",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Growatt SPH / MOD hybrid inverters via Modbus TCP.",
+        "homepage": "https://www.growatt.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "SPH",
+          "MOD"
+        ]
+      }
+    },
+    {
+      "id": "huawei-sun2000",
+      "path": "drivers/huawei.lua",
+      "filename": "huawei.lua",
+      "version": "1.0.0",
+      "sha256": "ab97e8c0afc549e51588b7108612c85cd9c9ab17dc58e9c5d2cfe7bbe5c9b9f4",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/huawei.lua",
+      "metadata": {
+        "name": "Huawei SUN2000 Hybrid Inverter",
+        "manufacturer": "Huawei",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Huawei SUN2000 hybrid inverters with LUNA2000 battery via Modbus TCP.",
+        "homepage": "https://solar.huawei.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "SUN2000L1",
+          "SUN2000-LUNA2000"
+        ]
+      }
+    },
+    {
+      "id": "kostal",
+      "path": "drivers/kostal.lua",
+      "filename": "kostal.lua",
+      "version": "1.0.0",
+      "sha256": "d2016c6cbb99103fd4991fd7b4442681090aa9b0c00d83c655ae6bbe793d1bbd",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/kostal.lua",
+      "metadata": {
+        "name": "Kostal Plenticore",
+        "manufacturer": "Kostal",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Kostal Plenticore Plus and Piko IQ via Modbus TCP (SunSpec plus Kostal custom map).",
+        "homepage": "https://www.kostal-solar-electric.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "Plenticore Plus",
+          "Piko IQ"
+        ]
+      }
+    },
+    {
+      "id": "pixii",
+      "path": "drivers/pixii.lua",
+      "filename": "pixii.lua",
+      "version": "1.0.0",
+      "sha256": "5ee87c4a49e6196bb929623ee524a311021b4ab047baef95916ae52b41baf70c",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/pixii.lua",
+      "metadata": {
+        "name": "Pixii PowerShaper",
+        "manufacturer": "Pixii",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "battery",
+          "meter"
+        ],
+        "description": "Pixii PowerShaper commercial battery storage via Modbus TCP.",
+        "homepage": "https://pixii.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "PowerShaper"
+        ]
+      }
+    },
+    {
+      "id": "pixii-pv",
+      "path": "drivers/pixii_pv.lua",
+      "filename": "pixii_pv.lua",
+      "version": "0.2.0",
+      "sha256": "f4c88c6ca866d1b827284df58d8d27d18f47ccca5fed099bbf3f78e1f85b2ffd",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/pixii_pv.lua",
+      "metadata": {
+        "name": "Pixii PowerShaper (PV + meter)",
+        "manufacturer": "Pixii",
+        "protocols": [
+          "mqtt"
+        ],
+        "capabilities": [
+          "pv",
+          "meter"
+        ],
+        "description": "Read-only Pixii telemetry: PV (external CTs) + grid meter (meter_w). Battery / SoC comes from the Modbus driver, not this one.",
+        "homepage": "https://pixii.com",
+        "connection_defaults": {
+          "port": 1883
+        },
+        "verification_status": "experimental"
+      }
+    },
+    {
+      "id": "sdm630",
+      "path": "drivers/sdm630.lua",
+      "filename": "sdm630.lua",
+      "version": "1.0.0",
+      "sha256": "10ab35c214eedf4c92cb2dc4733aca2ee4ffdc59617311cd7fa6b2f3a6da5dd1",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/sdm630.lua",
+      "metadata": {
+        "name": "Eastron SDM630 meter",
+        "manufacturer": "Eastron",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter"
+        ],
+        "description": "Eastron SDM630 and SDM72D-M three-phase energy meters via Modbus TCP/RTU.",
+        "homepage": "https://www.eastrongroup.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "SDM630 Modbus",
+          "SDM72D-M"
+        ]
+      }
+    },
+    {
+      "id": "sma",
+      "path": "drivers/sma.lua",
+      "filename": "sma.lua",
+      "version": "1.0.0",
+      "sha256": "2e50ccf8924ccd8ee8eb7897cb57486a20d9365b347b07e20e842f125832ae90",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/sma.lua",
+      "metadata": {
+        "name": "SMA hybrid inverter",
+        "manufacturer": "SMA",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "SMA Sunny Tripower / Sunny Boy Storage via Modbus TCP (SunSpec).",
+        "homepage": "https://www.sma.de",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "Sunny Tripower",
+          "Sunny Boy Storage"
+        ]
+      }
+    },
+    {
+      "id": "sofar",
+      "path": "drivers/sofar.lua",
+      "filename": "sofar.lua",
+      "version": "1.0.0",
+      "sha256": "8eff99ebb17e523e33bd1fab0df565587f93eb62d94191902bdfd10e7322861b",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/sofar.lua",
+      "metadata": {
+        "name": "Sofar hybrid inverter",
+        "manufacturer": "Sofar Solar",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Sofar Solar HYD-ES / HYD-EP hybrid inverters via Modbus TCP.",
+        "homepage": "https://www.sofarsolar.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "HYD-ES",
+          "HYD-EP"
+        ]
+      }
+    },
+    {
+      "id": "solaredge",
+      "path": "drivers/solaredge.lua",
+      "filename": "solaredge.lua",
+      "version": "1.0.0",
+      "sha256": "0634d2d0889abdbd3715a535cb3940be443e239b97655fa266a79a521a944dd8",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/solaredge.lua",
+      "metadata": {
+        "name": "SolarEdge inverter + meter",
+        "manufacturer": "SolarEdge",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv"
+        ],
+        "description": "SolarEdge HD-Wave / StorEdge via Modbus TCP (SunSpec).",
+        "homepage": "https://www.solaredge.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "HD-Wave",
+          "StorEdge"
+        ]
+      }
+    },
+    {
+      "id": "solaredge-legacy",
+      "path": "drivers/solaredge_legacy.lua",
+      "filename": "solaredge_legacy.lua",
+      "version": "0.1.0",
+      "sha256": "6cb8f3452ad942bfd11e311c958e878f139b0af131ca1b0ea50e60ba66efa945",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/solaredge_legacy.lua",
+      "metadata": {
+        "name": "SolarEdge legacy (K-series with display)",
+        "manufacturer": "SolarEdge",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "pv"
+        ],
+        "description": "SolarEdge K-series (SE7K / SE10K / SE17K / SE25K) PV inverter via Modbus TCP — uses FC 0x03 holding (legacy firmware doesn't mirror under FC 0x04 input).",
+        "homepage": "https://www.solaredge.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "First-cut clone of solaredge.lua targeting K-series display inverters. Awaits field verification — 17K install reported can-connect / can't-read on the HD-Wave driver, this variant uses holding registers to address that.",
+        "tested_models": [
+          "SE17K (display, legacy firmware)"
+        ]
+      }
+    },
+    {
+      "id": "solaredge-pv",
+      "path": "drivers/solaredge_pv.lua",
+      "filename": "solaredge_pv.lua",
+      "version": "1.0.0",
+      "sha256": "2e1e6b2c8fa52cbf35825cbdf026d4ef0a3b5ba9070bda91f9f654f0e163785d",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/solaredge_pv.lua",
+      "metadata": {
+        "name": "SolarEdge inverter (PV only)",
+        "manufacturer": "SolarEdge",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "pv"
+        ],
+        "description": "SolarEdge HD-Wave / StorEdge PV-only via Modbus TCP (SunSpec).",
+        "homepage": "https://www.solaredge.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "HD-Wave",
+          "StorEdge"
+        ]
+      }
+    },
+    {
+      "id": "solis",
+      "path": "drivers/solis.lua",
+      "filename": "solis.lua",
+      "version": "1.0.0",
+      "sha256": "6745d66ada06864594ceeae63af8b76642b0454a7eed64171c1ada16a733418d",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/solis.lua",
+      "metadata": {
+        "name": "Solis hybrid inverter",
+        "manufacturer": "Ginlong Solis",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Solis S5/S6 hybrid inverters via Modbus TCP.",
+        "homepage": "https://www.ginlong.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "S6-EH",
+          "S5-GR",
+          "S6-GR"
+        ]
+      }
+    },
+    {
+      "id": "solis-string",
+      "path": "drivers/solis_string.lua",
+      "filename": "solis_string.lua",
+      "version": "1.0.0",
+      "sha256": "67c53ca5b4ccb32929f9d505e91d63136c9d6bebf9f6a655fb70129c8a1e17cc",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/solis_string.lua",
+      "metadata": {
+        "name": "Solis string inverter",
+        "manufacturer": "Ginlong Solis",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "pv"
+        ],
+        "description": "Solis non-hybrid PV inverters via Modbus TCP.",
+        "homepage": "https://www.ginlong.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Read-only PV driver. Awaiting field verification on a 42W site.",
+        "tested_models": [
+          "S5-GC",
+          "S6-GR1P",
+          "3P-G4",
+          "1P-G4"
+        ]
+      }
+    },
+    {
+      "id": "sonnen",
+      "path": "drivers/sonnen.lua",
+      "filename": "sonnen.lua",
+      "version": "1.0.0",
+      "sha256": "91a180dee048050de9df8c948f449db8250202865b5a473acf35e6dd6774fe77",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/sonnen.lua",
+      "metadata": {
+        "name": "sonnenBatterie (local API)",
+        "manufacturer": "sonnen",
+        "protocols": [
+          "http"
+        ],
+        "capabilities": [
+          "battery"
+        ],
+        "description": "sonnenBatterie local JSON API v2: SoC + charge/discharge power. Read-only.",
+        "homepage": "https://sonnen.de",
+        "connection_defaults": {
+          "host": "",
+          "port": 80
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Community-contributed local-API driver; not yet verified against live hardware on a 42w site.",
+        "config_secrets": [
+          "api_token"
+        ]
+      }
+    },
+    {
+      "id": "sungrow-shx",
+      "path": "drivers/sungrow.lua",
+      "filename": "sungrow.lua",
+      "version": "1.0.0",
+      "sha256": "e8d76c419c45c83c1fc81dc927bfb3c5d89f9327ccfc0d4f91b3c45a7b8bf4f9",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/sungrow.lua",
+      "metadata": {
+        "name": "Sungrow SH Hybrid Inverter",
+        "manufacturer": "Sungrow",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Sungrow SH-series hybrid inverters with LFP battery, via Modbus TCP.",
+        "homepage": "https://en.sungrowpower.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "production",
+        "verified_by": [
+          "frahlg@homelab-rpi:14d"
+        ],
+        "verified_at": "2026-04-18",
+        "verification_notes": "Battery control + telemetry in continuous use on homelab-rpi. Device type 0x0E0E (SH10RT).",
+        "tested_models": [
+          "SH5.0RT",
+          "SH6.0RT",
+          "SH8.0RT",
+          "SH10RT"
+        ]
+      }
+    },
+    {
+      "id": "tesla-vehicle",
+      "path": "drivers/tesla_vehicle.lua",
+      "filename": "tesla_vehicle.lua",
+      "version": "0.1.0",
+      "sha256": "a450961b9407b63de034f752d77639208167f6cf428416143a61b3981da09627",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/tesla_vehicle.lua",
+      "metadata": {
+        "name": "Tesla Vehicle (BLE Proxy)",
+        "manufacturer": "Tesla",
+        "protocols": [
+          "http"
+        ],
+        "capabilities": [
+          "vehicle"
+        ],
+        "description": "Read-only vehicle SoC + charge limit via Tesla API-compatible HTTP endpoint (e.g. TeslaBLEProxy).",
+        "homepage": "https://github.com/wimaha/TeslaBleHttpProxy",
+        "verification_status": "beta",
+        "tested_models": [
+          "Model Y",
+          "Model 3"
+        ]
+      }
+    },
+    {
+      "id": "victron",
+      "path": "drivers/victron.lua",
+      "filename": "victron.lua",
+      "version": "1.0.0",
+      "sha256": "674f3744ecee4e17921488c048cda589e84645f72222ecaa69b46d2ccf3ee273",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/victron.lua",
+      "metadata": {
+        "name": "Victron Energy GX",
+        "manufacturer": "Victron Energy",
+        "protocols": [
+          "modbus"
+        ],
+        "capabilities": [
+          "meter",
+          "pv",
+          "battery"
+        ],
+        "description": "Victron Cerbo GX / Venus GX monitoring via Modbus TCP.",
+        "homepage": "https://www.victronenergy.com",
+        "connection_defaults": {
+          "port": 502,
+          "unit_id": 1
+        },
+        "verification_status": "experimental",
+        "verification_notes": "Ported from a reference implementation. Not yet verified against live hardware on a 42W site.",
+        "tested_models": [
+          "Cerbo GX",
+          "Venus GX"
+        ]
+      }
+    },
+    {
+      "id": "sourceful-zap",
+      "path": "drivers/zap.lua",
+      "filename": "zap.lua",
+      "version": "1.1.0",
+      "sha256": "8a6a0f2d090563c57a300123425d3aa38490fd1fb7aecc7884f11a45af871f5d",
+      "url": "https://raw.githubusercontent.com/srcfl/hugin-drivers/main/drivers/zap.lua",
+      "metadata": {
+        "name": "Sourceful Zap",
+        "manufacturer": "Sourceful",
+        "protocols": [
+          "http"
+        ],
+        "capabilities": [
+          "meter",
+          "pv"
+        ],
+        "description": "Sourceful Zap local-JSON gateway: P1 grid meter + PV from any attached inverter.",
+        "homepage": "https://sourceful.energy",
+        "connection_defaults": {
+          "host": "zap.local"
+        },
+        "verification_status": "beta",
+        "verified_by": [
+          "erikarenhill@fortytwo:3d"
+        ],
+        "verified_at": "2026-04-17",
+        "verification_notes": "P1 + PV aggregation verified against a live Sourceful Zap. Awaiting a second site to promote to production."
+      }
+    }
+  ]
+}

@@ -44,6 +44,31 @@ local ehub_data = nil
 local eso_data = nil
 local sso_data = nil
 
+-- Last-arrival timestamp per topic (host.millis()). The EnergyHub
+-- normally publishes ehub at ~1 Hz; if it goes silent (power off,
+-- fuse blow, broker partition) the cached tables above stay
+-- populated. Without per-topic age checks the driver would re-emit
+-- last-known values on every poll, host.emit would re-stamp
+-- LastSuccess, and the watchdog could not flip the driver offline.
+-- Real incident: 2026-05-02 fuse blow left ferroamp emitting
+-- pv_w=-3996.7040 / meter_w=-7294.0490 identical to four decimals
+-- for 30+ minutes while the EnergyHub itself was unpowered.
+local ehub_ts = 0
+local eso_ts  = 0
+local sso_ts  = 0
+
+-- Treat cached topic data as stale beyond this age. EnergyHub
+-- publishes ehub at ~1 Hz and eso/sso slightly slower; 30 s gives
+-- generous slack for a WiFi blip or broker reconnect without
+-- flipping the driver offline.
+local STALE_AFTER_MS = 30000
+
+-- Optional config knob: when `skip_battery` is true the driver will
+-- NOT emit battery telemetry even when the ESO/pbat fields are
+-- present on the wire. Useful for dev setups that want a PV-only
+-- dashboard fed by the otherwise full-featured Ferroamp sim.
+local SKIP_BATTERY = false
+
 ----------------------------------------------------------------------------
 -- Helpers
 ----------------------------------------------------------------------------
@@ -106,6 +131,15 @@ end
 function driver_init(config)
     host.set_make("Ferroamp")
 
+    -- Honour the `skip_battery` config knob if set — the driver stays
+    -- otherwise unchanged, but host.emit("battery", …) is skipped so
+    -- the rest of the stack (dashboard, models, planner) sees no
+    -- battery capability from this instance.
+    if config and config.skip_battery then
+        SKIP_BATTERY = true
+        host.log("info", "Ferroamp: skip_battery=true — battery emission disabled")
+    end
+
     -- Subscribe to telemetry topics
     host.mqtt_subscribe("extapi/data/ehub")
     host.mqtt_subscribe("extapi/data/eso")
@@ -125,22 +159,45 @@ function driver_init(config)
 end
 
 function driver_poll()
+    local now = host.millis()
     local messages = host.mqtt_messages()
-    if not messages then return 1000 end
+    if not messages then messages = {} end
 
-    -- Process incoming messages and cache data
+    -- Process incoming messages and stamp arrival time per topic
     for _, msg in ipairs(messages) do
         local ok, data = pcall(host.json_decode, msg.payload)
         if ok and data then
             if msg.topic == "extapi/data/ehub" then
-                ehub_data = data
+                ehub_data = data; ehub_ts = now
             elseif msg.topic == "extapi/data/eso" then
-                eso_data = data
+                eso_data = data; eso_ts = now
             elseif msg.topic == "extapi/data/sso" then
-                sso_data = data
+                sso_data = data; sso_ts = now
             end
         end
     end
+
+    -- Drop stale caches so the rest of the poll falls through and
+    -- the watchdog catches us when the EnergyHub stops publishing.
+    -- Per-topic so a partial outage (e.g. eso lags but ehub flows)
+    -- still lets the live channels through.
+    if ehub_data and (now - ehub_ts) > STALE_AFTER_MS then
+        host.log("warn", "Ferroamp: ehub stale (" .. (now - ehub_ts) .. " ms) — dropping cache")
+        ehub_data = nil
+    end
+    if eso_data and (now - eso_ts) > STALE_AFTER_MS then
+        eso_data = nil
+    end
+    if sso_data and (now - sso_ts) > STALE_AFTER_MS then
+        sso_data = nil
+    end
+
+    -- Diagnostics: per-topic age into the long-format TS DB so
+    -- operators can see partial outages directly in the metric
+    -- browser. Reported as "0" when never seen yet (ts = 0).
+    host.emit_metric("ehub_age_ms", ehub_ts == 0 and 0 or (now - ehub_ts))
+    host.emit_metric("eso_age_ms",  eso_ts  == 0 and 0 or (now - eso_ts))
+    host.emit_metric("sso_age_ms",  sso_ts  == 0 and 0 or (now - sso_ts))
 
     --------------------------------------------------------------------------
     -- Meter (grid connection point)
@@ -149,7 +206,12 @@ function driver_poll()
         local pext     = extract_val(ehub_data, "pext")     -- per-phase grid power (W)
         local gridfreq = extract_val(ehub_data, "gridfreq") -- grid frequency (Hz)
         local ul       = extract_val(ehub_data, "ul")       -- per-phase voltage (V)
-        local il       = extract_val(ehub_data, "il")       -- per-phase current (A)
+        -- iext = per-phase GRID current at the service-entrance CTs, the
+        -- same source pext is derived from. NOT il (which is inverter AC
+        -- current and misses any load not routed through the Ferroamp
+        -- inverter, e.g. an EV charger on a separate breaker — that mix
+        -- made the fuse bars under-read by the EV share of total import).
+        local iext     = extract_val(ehub_data, "iext")     -- per-phase grid current (A)
         -- 3-phase energy totals in mJ
         local wextconsq3p = extract_val(ehub_data, "wextconsq3p") -- total import mJ
         local wextprodq3p = extract_val(ehub_data, "wextprodq3p") -- total export mJ
@@ -172,10 +234,12 @@ function driver_poll()
         meter.l2_v = phase_val(ul, "L2")
         meter.l3_v = phase_val(ul, "L3")
 
-        -- Per-phase current
-        meter.l1_a = phase_val(il, "L1")
-        meter.l2_a = phase_val(il, "L2")
-        meter.l3_a = phase_val(il, "L3")
+        -- Per-phase grid current (from service-entrance CTs, consistent
+        -- with pext above — previously read il by mistake, which is
+        -- inverter AC current).
+        meter.l1_a = phase_val(iext, "L1")
+        meter.l2_a = phase_val(iext, "L2")
+        meter.l3_a = phase_val(iext, "L3")
 
         -- Energy counters (mJ → Wh)
         if wextconsq3p then
@@ -213,7 +277,7 @@ function driver_poll()
     --------------------------------------------------------------------------
     -- Battery
     --------------------------------------------------------------------------
-    if ehub_data then
+    if ehub_data and not SKIP_BATTERY then
         local pbat = extract_val(ehub_data, "pbat")
         if pbat then
             local battery = {}
