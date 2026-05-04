@@ -67,12 +67,29 @@ the PR opens in your own GitHub name.
 Drop a `.lua` file in `drivers/` matching the schema above and open a pull
 request. Include `tested_models` so the next contributor knows what works.
 
+Before opening the PR, run the same verifier CI runs:
+
+```bash
+go run ./cmd/driverrepo -verify
+```
+
+When adding or changing a driver, regenerate the static manifest:
+
+```bash
+go run ./cmd/driverrepo -write-manifest
+```
+
+The verifier checks that every driver has parseable metadata, a unique
+ID, a semver version, a documented site sign convention, and that the
+file loads in gopher-lua. It also checks that `manifest.json` matches
+the driver files and their SHA-256 hashes.
+
 ## Driver discovery
 
-Drivers in this repo are served via Hugin's catalog API:
+Drivers in this repo are exposed through the static manifest:
 
 ```
-https://api.hugin.sourceful-labs.net/v1/catalog
+https://raw.githubusercontent.com/srcfl/hugin-drivers/main/manifest.json
 ```
 
 forty-two-watts and other EMS clients can consume the catalog directly or
